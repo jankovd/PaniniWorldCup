@@ -11,6 +11,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import fr.nicolaspomepuy.discreetapprate.AppRate;
+import fr.nicolaspomepuy.discreetapprate.AppRateTheme;
+import fr.nicolaspomepuy.discreetapprate.RetryPolicy;
 import mk.jdex.paniniworldcup.content.CountriesInfoTable;
 import mk.jdex.paniniworldcup.ui.StickersFragment;
 import mk.jdex.paniniworldcup.ui.adapter.CountriesCursorAdapter;
@@ -42,6 +45,22 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
         mAdapter = new CountriesCursorAdapter(actionBar.getThemedContext(), null);
         actionBar.setListNavigationCallbacks(mAdapter, this);
         getSupportLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        if (savedInstanceState == null) {
+            AppRate.with(MainActivity.this)
+                    .text("Like the app? Rate it!")
+                    .fromTop(true)
+                    .theme(AppRateTheme.DARK)
+                    .retryPolicy(RetryPolicy.INCREMENTAL)
+                    .initialLaunchCount(3)
+                    .delay(1500)
+                    .checkAndShow();
+        }
     }
 
     @Override

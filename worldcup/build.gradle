@@ -19,6 +19,7 @@ android {
 }
 
 dependencies {
+    compile 'fr.nicolaspomepuy:discreetapprate:1.0.+@aar'
     compile 'com.android.support:gridlayout-v7:19.0.1'
     compile 'com.android.support:support-v4:19.0.1'
     compile 'com.android.support:appcompat-v7:19.0.1'
