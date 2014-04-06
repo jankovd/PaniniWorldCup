@@ -33,6 +33,7 @@ import static mk.jdex.paniniworldcup.util.Util.hasJellyBean;
 public class StickersFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     public static final int STICKERS_NO_FILTER = -1;
+    private static final int STICKERS_WAIT_FOR_FILTER = -2;
 
     private static final String STATE_COUNTRY_ID = "state_country_id";
 
@@ -47,9 +48,9 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mCountryId = STICKERS_NO_FILTER;
+        mCountryId = STICKERS_WAIT_FOR_FILTER;
         if (savedInstanceState != null) {
-            mCountryId = savedInstanceState.getInt(STATE_COUNTRY_ID, STICKERS_NO_FILTER);
+            mCountryId = savedInstanceState.getInt(STATE_COUNTRY_ID, STICKERS_WAIT_FOR_FILTER);
         }
     }
 
@@ -109,7 +110,9 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getLoaderManager().initLoader(0, null, this);
+        if (mCountryId != STICKERS_WAIT_FOR_FILTER) {
+            getLoaderManager().initLoader(0, null, this);
+        }
     }
 
     @Override
@@ -122,7 +125,7 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
      * @param countryId the id of the country for which stickers should be displayed or {@link #STICKERS_NO_FILTER} to display all
      */
     public void setSelectedCountryId(int countryId) {
-        if (mCountryId == countryId) {
+        if (mCountryId == countryId && mCountryId != STICKERS_WAIT_FOR_FILTER) {
             return;
         }
         mCountryId = countryId;
@@ -139,7 +142,11 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String selection = null;
         String[] selectionArgs = null;
-        if (mCountryId != -1) {
+        if (mCountryId == STICKERS_WAIT_FOR_FILTER) {
+            // if we by mistake get here when we should wait for a filter, display all items
+            mCountryId = STICKERS_NO_FILTER;
+        }
+        if (mCountryId != STICKERS_NO_FILTER) {
             selection = StickersTable.COLUMN_COUNTRY_ID + "=?";
             selectionArgs = new String[]{String.valueOf(mCountryId)};
         }
