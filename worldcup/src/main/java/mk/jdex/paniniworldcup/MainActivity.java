@@ -37,8 +37,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
 
         // Set up the action bar to show a dropdown list.
         final ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
         // Set up the dropdown list navigation in the action bar.
         mAdapter = new CountriesCursorAdapter(actionBar.getThemedContext(), null);
@@ -91,7 +89,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
         Cursor c = ((Cursor) mAdapter.getItem(position));
         int countryId = c.getInt(colCountryId);
         boolean isTheOne = c.getInt(colTheOne) == 1;
-        mStickersFragment.setSelectedCountryId(isTheOne ? -1 : countryId);
+        mStickersFragment.setSelectedCountryId(isTheOne ? StickersFragment.STICKERS_NO_FILTER : countryId);
         return true;
     }
 
@@ -106,6 +104,17 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
             CountriesInfoTable.COLUMN_THE_ONE
     };
 
+    private void showAbListNavigation(boolean showList) {
+        final ActionBar actionBar = getSupportActionBar();
+        if (showList && actionBar.getNavigationMode() != ActionBar.NAVIGATION_MODE_LIST) {
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        } else if (!showList) {
+            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        }
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         CursorLoader cr = new CursorLoader(this, CountriesInfoTable.CONTENT_URI, sProjection, null, null, null);
@@ -115,11 +124,13 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        showAbListNavigation(data != null);
         mAdapter.changeCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        showAbListNavigation(false);
         mAdapter.changeCursor(null);
     }
 

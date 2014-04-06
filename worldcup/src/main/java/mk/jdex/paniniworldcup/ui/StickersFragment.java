@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
 
@@ -30,22 +32,26 @@ import static mk.jdex.paniniworldcup.util.Util.hasJellyBean;
  */
 public class StickersFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
+    public static final int STICKERS_NO_FILTER = -1;
+
     private static final String STATE_COUNTRY_ID = "state_country_id";
 
+    private StickyGridHeadersGridView mGridView;
+    private TextView mEmptyTextView;
+    private ProgressBar mEmptyProgressView;
+
     private StickersCursorAdapter mAdapter;
+    private int mCountryId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mCountryId = -1;
+        mCountryId = STICKERS_NO_FILTER;
         if (savedInstanceState != null) {
-            mCountryId = savedInstanceState.getInt(STATE_COUNTRY_ID, -1);
+            mCountryId = savedInstanceState.getInt(STATE_COUNTRY_ID, STICKERS_NO_FILTER);
         }
     }
-
-    private StickyGridHeadersGridView mGridView;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,7 +61,11 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
         mGridView.setAreHeadersSticky(false);
         mGridView.setOnItemClickListener(this);
         mGridView.setOnItemLongClickListener(this);
-        mGridView.setNumColumns(2);
+
+        View emptyView = contentView.findViewById(R.id.empty_grid_layout);
+        mEmptyProgressView = (ProgressBar) emptyView.findViewById(R.id.pb_empty);
+        mEmptyTextView = (TextView) emptyView.findViewById(R.id.tv_empty);
+        mGridView.setEmptyView(emptyView);
 
         return contentView;
     }
@@ -108,10 +118,8 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
         outState.putInt(STATE_COUNTRY_ID, mCountryId);
     }
 
-    private int mCountryId;
-
     /**
-     * @param countryId the id of the country for which stickers should be displayed or -1 to display all
+     * @param countryId the id of the country for which stickers should be displayed or {@link #STICKERS_NO_FILTER} to display all
      */
     public void setSelectedCountryId(int countryId) {
         if (mCountryId == countryId) {
@@ -120,6 +128,12 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
         mCountryId = countryId;
         getLoaderManager().restartLoader(0, null, this);
     }
+
+    private void setEmptyViewVisibility(boolean isDatasetEmpty) {
+        mEmptyProgressView.setVisibility(isDatasetEmpty ? View.GONE : View.VISIBLE);
+        mEmptyTextView.setVisibility(isDatasetEmpty ? View.VISIBLE : View.GONE);
+    }
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -148,11 +162,15 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.changeCursor(data);
+
+        setEmptyViewVisibility(data == null);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.changeCursor(null);
+
+        setEmptyViewVisibility(false);
     }
 
     @Override

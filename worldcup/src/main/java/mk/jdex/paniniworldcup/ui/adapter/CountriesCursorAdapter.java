@@ -95,18 +95,6 @@ public class CountriesCursorAdapter extends CursorAdapter {
         return ((Cursor) getItem(position)).getInt(mColTheOne) == 1;
     }
 
-//    @Override
-//    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-//
-//        if (convertView == null) {
-//            convertView = newView(null, null, parent);
-//        }
-//
-//        ViewHolder holder = (ViewHolder) convertView.getTag();
-//        holder.displayName.setText(((Cursor) getItem(position)).getString(mColAbbr));
-//        return convertView;
-//    }
-
     private static class ViewHolder {
         TextView displayName;
         TextView count;
