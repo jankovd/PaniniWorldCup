@@ -2,6 +2,7 @@ package mk.jdex.paniniworldcup.ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersSimpleAdapter;
 
+import java.util.HashMap;
+
 import mk.jdex.paniniworldcup.R;
 import mk.jdex.paniniworldcup.content.StickersTable;
 
@@ -18,6 +21,8 @@ import mk.jdex.paniniworldcup.content.StickersTable;
  * Created by Dejan on 4/5/14.
  */
 public class StickersCursorAdapter extends CursorAdapter implements StickyGridHeadersSimpleAdapter {
+
+    private static final HashMap<Integer, Boolean> sColorIsDark = new HashMap<Integer, Boolean>(15);
 
     private LayoutInflater mInflater;
     private int mItemHeight;
@@ -108,11 +113,31 @@ public class StickersCursorAdapter extends CursorAdapter implements StickyGridHe
         int count = cursor.getInt(mColCount);
         holder.count.setText("" + count);
 
+        int bkgColor;
         if (count == 0) {
-            view.setBackgroundColor(cursor.getInt(mSecondaryColor));
+            holder.count.setVisibility(View.GONE);
+            bkgColor = cursor.getInt(mSecondaryColor);
         } else {
-            view.setBackgroundColor(cursor.getInt(mPrimaryColor));
+            holder.count.setVisibility(View.VISIBLE);
+            bkgColor = cursor.getInt(mPrimaryColor);
         }
+        view.setBackgroundColor(bkgColor);
+
+        int textColor = getTextColor(bkgColor);
+        holder.displayName.setTextColor(textColor);
+        holder.count.setTextColor(textColor);
+    }
+
+    private int getTextColor(int bkgColor) {
+
+        if (sColorIsDark.containsKey(bkgColor)) {
+            return sColorIsDark.get(bkgColor) ? Color.WHITE : Color.BLACK;
+        }
+
+        int[] rgb = new int[]{Color.red(bkgColor), Color.green(bkgColor), Color.blue(bkgColor)};
+        double luma = 0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2];
+        sColorIsDark.put(bkgColor, luma < 128);
+        return getTextColor(bkgColor);
     }
 
     public void setItemHeight(int itemHeight) {
@@ -140,8 +165,10 @@ public class StickersCursorAdapter extends CursorAdapter implements StickyGridHe
         }
 
         holder.title.setText(((Cursor) getItem(i)).getString(mCountryAbbr));
+
         return view;
     }
+
 
     private static class ViewHolder {
         TextView displayName;
