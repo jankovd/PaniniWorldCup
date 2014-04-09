@@ -10,10 +10,29 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    buildTypes {
+    signingConfigs {
+        // Can be later modified to read the path and keystore info from the command line,
+        // see http://stackoverflow.com/questions/18328730/how-to-create-a-release-signed-apk-file-using-gradle
         release {
+            storeFile file("../distribution/release.keystore")
+            storePassword "wf.gameguide"
+            keyAlias "webfactory"
+            keyPassword "wf.gameguide"
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+        }
+        release {
+            signingConfig signingConfigs.release
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+    productFlavors {
+        worldCup {
+            packageName 'mk.jankovd.album.worldcup'
         }
     }
 }
@@ -21,7 +40,8 @@ android {
 dependencies {
     compile 'fr.nicolaspomepuy:discreetapprate:1.0.+@aar'
     compile 'com.android.support:gridlayout-v7:19.0.1'
-    compile 'com.android.support:support-v4:19.0.1'
-    compile 'com.android.support:appcompat-v7:19.0.1'
+    compile 'com.android.support:support-v4:19.1.0'
+    compile 'com.android.support:appcompat-v7:19.1.0'
+    compile 'com.google.android.gms:play-services:4.3.23'
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }

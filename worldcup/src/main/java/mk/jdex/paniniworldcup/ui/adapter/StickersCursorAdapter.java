@@ -36,11 +36,14 @@ public class StickersCursorAdapter extends CursorAdapter implements StickyGridHe
     private int mCountryId;
     private int mCountryAbbr;
 
+    private int mColorActiveItem;
+
     public StickersCursorAdapter(Context context, Cursor c) {
         super(context, c, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
         mInflater = LayoutInflater.from(context);
         mItemHeight = context.getResources().getDimensionPixelSize(R.dimen.grid_item_width);
+        mColorActiveItem = context.getResources().getColor(R.color.item_sticker_active);
 
         readColumnsFromCursor(c);
     }
@@ -116,10 +119,10 @@ public class StickersCursorAdapter extends CursorAdapter implements StickyGridHe
         int bkgColor;
         if (count == 0) {
             holder.count.setVisibility(View.GONE);
-            bkgColor = cursor.getInt(mSecondaryColor);
+            bkgColor = cursor.getInt(mPrimaryColor /*mSecondaryColor*/);
         } else {
             holder.count.setVisibility(View.VISIBLE);
-            bkgColor = cursor.getInt(mPrimaryColor);
+            bkgColor = mColorActiveItem; // cursor.getInt(mPrimaryColor);
         }
         view.setBackgroundColor(bkgColor);
 

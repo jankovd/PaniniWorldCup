@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="mk.jdex.paniniworldcup">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -21,8 +23,12 @@
 
         <provider
             android:name=".content.StickersProvider"
-            android:authorities="mk.jdex.provider.paniniworldcup"
+            android:authorities="mk.jankovd.provider.paniniworldcup"
             android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

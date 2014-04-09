@@ -23,7 +23,7 @@ import java.util.Locale;
 
 public class StickersProvider extends ContentProvider {
 
-    public static final String AUTHORITY = "mk.jdex.provider.paniniworldcup";
+    public static final String AUTHORITY = "mk.jankovd.provider.paniniworldcup";
     private static final String TAG = "StickersProvider";
     private static final int CODE_STICKERS = 1;
     private static final int CODE_STICKERS_ID = 2;
