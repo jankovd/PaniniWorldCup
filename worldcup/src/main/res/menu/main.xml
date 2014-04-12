@@ -1,10 +1,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="mk.jdex.paniniworldcup.MainActivity" >
-    
-    <item android:id="@+id/action_settings"
-        android:title="Color Calculator"
+    tools:context="mk.jdex.paniniworldcup.MainActivity">
+
+    <item
+        android:id="@+id/action_settings"
         android:orderInCategory="100"
+        android:title="Color Calculator"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_export"
+        android:orderInCategory="1"
+        android:title="Send Report"
         app:showAsAction="never" />
 </menu>
