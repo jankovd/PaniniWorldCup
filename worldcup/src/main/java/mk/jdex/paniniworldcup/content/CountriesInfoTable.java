@@ -11,7 +11,7 @@ public class CountriesInfoTable implements BaseColumns {
     public static final String COLUMN_ABBR = CountriesTable.COLUMN_ABBREVIATION;
     public static final String COLUMN_PRIMARY_COLOR = CountriesTable.COLUMN_PRIMARY_COLOR;
     public static final String COLUMN_SECONDARY_COLOR = CountriesTable.COLUMN_SECONDARY_COLOR;
-    public static final String COLUMN_THE_ONE = CountriesTable.COLUMN_THE_ONE;
+    public static final String COLUMN_HAS_STICKERS = CountriesTable.COLUMN_HAS_STICKERS;
     public static final String COLUMN_ALL_STICKERS = "all_stickers";
     public static final String COLUMN_UNIQUE_STICKERS = "unique_stickers";
     public static final String COLUMN_WITH_DOUBLES_COUNT = "with_doubles";

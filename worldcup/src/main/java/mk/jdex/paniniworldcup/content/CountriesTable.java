@@ -10,6 +10,6 @@ class CountriesTable implements BaseColumns {
     public static final String COLUMN_ABBREVIATION = "abbr";
     public static final String COLUMN_PRIMARY_COLOR = "primary_color";
     public static final String COLUMN_SECONDARY_COLOR = "secondary_color";
-    public static final String COLUMN_THE_ONE = "the_one";
+    public static final String COLUMN_HAS_STICKERS = "has_stickers";
 }
 

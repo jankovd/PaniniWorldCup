@@ -8,7 +8,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -16,10 +15,14 @@ import fr.nicolaspomepuy.discreetapprate.AppRate;
 import fr.nicolaspomepuy.discreetapprate.AppRateTheme;
 import fr.nicolaspomepuy.discreetapprate.RetryPolicy;
 import mk.jdex.paniniworldcup.content.CountriesInfoTable;
+import mk.jdex.paniniworldcup.model.ReportOptions;
+import mk.jdex.paniniworldcup.ui.GenerateReportFragment;
+import mk.jdex.paniniworldcup.ui.ReportOptionsDialog;
 import mk.jdex.paniniworldcup.ui.StickersFragment;
 import mk.jdex.paniniworldcup.ui.adapter.CountriesCursorAdapter;
 
-public class MainActivity extends ActionBarActivity implements ActionBar.OnNavigationListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends ActionBarActivity implements ActionBar.OnNavigationListener,
+        LoaderManager.LoaderCallbacks<Cursor>, ReportOptionsDialog.OnOptionsSelected {
 
     /**
      * The serialization (saved instance state) Bundle key representing the
@@ -66,6 +69,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
         // Restore the previously serialized current dropdown position.
         if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
             getSupportActionBar().setSelectedNavigationItem(
@@ -75,6 +79,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         // Serialize the current dropdown position.
         outState.putInt(STATE_SELECTED_NAVIGATION_ITEM,
                 getSupportActionBar().getSelectedNavigationIndex());
@@ -98,6 +103,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, ColorCalc.class));
             return true;
+        } else if (id == R.id.action_export) {
+            new ReportOptionsDialog().show(getSupportFragmentManager(), "report_options_dialog");
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -105,11 +113,11 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
     @Override
     public boolean onNavigationItemSelected(int position, long id) {
         int colCountryId = mAdapter.getColCountryId();
-        int colTheOne = mAdapter.getColTheOne();
+        int colHasStickers = mAdapter.getColHasStickers();
         Cursor c = ((Cursor) mAdapter.getItem(position));
         int countryId = c.getInt(colCountryId);
-        boolean isTheOne = c.getInt(colTheOne) == 1;
-        mStickersFragment.setSelectedCountryId(isTheOne ? StickersFragment.STICKERS_NO_FILTER : countryId);
+        boolean hasStickers = c.getInt(colHasStickers) == 1;
+        mStickersFragment.setSelectedCountryId(hasStickers ? StickersFragment.STICKERS_NO_FILTER : countryId);
         return true;
     }
 
@@ -121,7 +129,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
             CountriesInfoTable.COLUMN_UNIQUE_STICKERS,
             CountriesInfoTable.COLUMN_WITH_DOUBLES_COUNT,
             CountriesInfoTable.COLUMN_ALL_STICKERS,
-            CountriesInfoTable.COLUMN_THE_ONE
+            CountriesInfoTable.COLUMN_HAS_STICKERS
     };
 
     private void showAbListNavigation(boolean showList) {
@@ -154,4 +162,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
         mAdapter.changeCursor(null);
     }
 
+    @Override
+    public void onOptionsSelected(ReportOptions opt) {
+        GenerateReportFragment.newInstance(opt).show(getSupportFragmentManager(), "generate_report_dialog");
+    }
 }

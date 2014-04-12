@@ -48,7 +48,7 @@ public class CountriesCursorAdapter extends CursorAdapter {
         if (c != null) {
             mColId = c.getColumnIndex(CountriesInfoTable._ID);
             mColAbbr = c.getColumnIndex(CountriesInfoTable.COLUMN_ABBR);
-            mColTheOne = c.getColumnIndex(CountriesInfoTable.COLUMN_THE_ONE);
+            mColTheOne = c.getColumnIndex(CountriesInfoTable.COLUMN_HAS_STICKERS);
             mColAllCount = c.getColumnIndex(CountriesInfoTable.COLUMN_ALL_STICKERS);
             mColUniqueCount = c.getColumnIndex(CountriesInfoTable.COLUMN_UNIQUE_STICKERS);
             mColWithDoubles = c.getColumnIndex(CountriesInfoTable.COLUMN_WITH_DOUBLES_COUNT);
@@ -59,7 +59,7 @@ public class CountriesCursorAdapter extends CursorAdapter {
         return mColId;
     }
 
-    public int getColTheOne() {
+    public int getColHasStickers() {
         return mColTheOne;
     }
 
