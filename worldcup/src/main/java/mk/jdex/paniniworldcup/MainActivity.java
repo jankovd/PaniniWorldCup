@@ -2,6 +2,8 @@ package mk.jdex.paniniworldcup;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -48,6 +50,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
         // Set up the dropdown list navigation in the action bar.
         mAdapter = new CountriesCursorAdapter(actionBar.getThemedContext(), null);
         actionBar.setListNavigationCallbacks(mAdapter, this);
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#33ffffff")));
         getSupportLoaderManager().initLoader(0, null, this);
     }
 
