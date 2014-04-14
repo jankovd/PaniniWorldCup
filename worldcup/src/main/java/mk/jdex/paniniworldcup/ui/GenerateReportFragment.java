@@ -88,7 +88,7 @@ public class GenerateReportFragment extends DialogFragment {
             ContentResolver cr = App.getInstance().getContentResolver();
             /*only equal*/ /*base count*/ /*include count in report*/ /*section name*/
             if (mOptions.showAll)
-                appendStickersWithCount(false, 0, false, "All", mReportBuilder);
+                appendStickersWithCount(false, 0, false, "Collected", mReportBuilder);
             if (mOptions.showDoubles)
                 appendStickersWithCount(false, 1, true, "Available for trading", mReportBuilder);
             if (mOptions.showMissing)

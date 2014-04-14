@@ -51,6 +51,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
         mAdapter = new CountriesCursorAdapter(actionBar.getThemedContext(), null);
         actionBar.setListNavigationCallbacks(mAdapter, this);
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#33ffffff")));
+        actionBar.setDisplayShowHomeEnabled(false);
         getSupportLoaderManager().initLoader(0, null, this);
     }
 

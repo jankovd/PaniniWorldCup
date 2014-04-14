@@ -32,7 +32,7 @@ android {
     }
     productFlavors {
         worldCup {
-            packageName 'mk.jankovd.album.worldcup'
+            packageName 'mk.jankovd.albumcompanion'
         }
     }
 }
