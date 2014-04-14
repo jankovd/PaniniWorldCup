@@ -8,6 +8,11 @@
         android:orderInCategory="100"
         android:title="Color Calculator"
         app:showAsAction="never" />
+    <!--<item-->
+    <!--android:id="@+id/action_stickersinsert"-->
+    <!--android:orderInCategory="100"-->
+    <!--android:title="Insert Stickers" -->
+    <!--app:showAsAction="never" />-->
     <item
         android:id="@+id/action_export"
         android:orderInCategory="1"

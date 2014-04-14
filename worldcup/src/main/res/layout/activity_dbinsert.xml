@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <EditText
+        android:id="@+id/et_r"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number" android:hint="group id"
+        android:maxLength="3" />
+
+    <EditText
+        android:id="@+id/et_g"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number" android:hint="from"
+        android:maxLength="3" />
+
+    <EditText
+        android:id="@+id/et_b"
+        android:layout_width="match_parent" android:hint="to"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:maxLength="3" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="Insert" />
+
+</LinearLayout>

@@ -24,6 +24,7 @@ import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
 import mk.jdex.paniniworldcup.R;
 import mk.jdex.paniniworldcup.content.StickersTable;
 import mk.jdex.paniniworldcup.ui.adapter.StickersCursorAdapter;
+import mk.jdex.paniniworldcup.util.App;
 
 import static mk.jdex.paniniworldcup.util.Util.hasJellyBean;
 
@@ -31,6 +32,8 @@ import static mk.jdex.paniniworldcup.util.Util.hasJellyBean;
  * Created by Dejan on 4/5/14.
  */
 public class StickersFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+
+    private static final String STATE_FISRT_VISIBLE_ITEM = "state_first_visible_item";
 
     public static final int STICKERS_NO_FILTER = -1;
     private static final int STICKERS_WAIT_FOR_FILTER = -2;
@@ -43,14 +46,17 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
 
     private StickersCursorAdapter mAdapter;
     private int mCountryId;
+    private int mFirstVisiblePosition;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mCountryId = STICKERS_WAIT_FOR_FILTER;
+        mFirstVisiblePosition = 0;
         if (savedInstanceState != null) {
             mCountryId = savedInstanceState.getInt(STATE_COUNTRY_ID, STICKERS_WAIT_FOR_FILTER);
+            mFirstVisiblePosition = savedInstanceState.getInt(STATE_FISRT_VISIBLE_ITEM);
         }
     }
 
@@ -119,6 +125,7 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_COUNTRY_ID, mCountryId);
+        outState.putInt(STATE_FISRT_VISIBLE_ITEM, mGridView.getFirstVisiblePosition());
     }
 
     /**
@@ -168,9 +175,20 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        boolean restorePostion = mAdapter.isEmpty();
         mAdapter.changeCursor(data);
-
         setEmptyViewVisibility(data == null);
+
+        if (!restorePostion) {
+            return;
+        }
+
+        mGridView.post(new Runnable() {
+            @Override
+            public void run() {
+                mGridView.setSelection(mFirstVisiblePosition);
+            }
+        });
     }
 
     @Override
@@ -193,13 +211,18 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
 
     private void updateCount(int position, boolean reset) {
         Cursor c = (Cursor) mAdapter.getItem(position);
+        final int _id = c.getInt(mAdapter.getColId());
+        final int _count = reset ? -1 : c.getInt(mAdapter.getColCount());
 
-        int _id = c.getInt(mAdapter.getColId());
-        Uri updateUri = StickersTable.CONTENT_URI;
-        updateUri = ContentUris.withAppendedId(updateUri, _id);
-        ContentValues values = new ContentValues();
-        int _count = reset ? -1 : c.getInt(mAdapter.getColCount());
-        values.put(StickersTable.COLUMN_COUNT, _count >= 5 ? 0 : ++_count);
-        getActivity().getContentResolver().update(updateUri, values, null, null);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Uri updateUri = StickersTable.CONTENT_URI;
+                updateUri = ContentUris.withAppendedId(updateUri, _id);
+                ContentValues values = new ContentValues();
+                values.put(StickersTable.COLUMN_COUNT, _count >= 5 ? 0 : (_count + 1));
+                App.getInstance().getContentResolver().update(updateUri, values, null, null);
+            }
+        }).start();
     }
 }

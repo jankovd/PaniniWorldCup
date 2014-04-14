@@ -32,6 +32,11 @@ public class StickersProvider extends ContentProvider {
     private final UriMatcher mUriMatcher;
     private DatabaseHelper mDbHelper;
 
+    /**
+     * debug
+     * public static SQLiteDatabase sDatabase;
+     */
+
     public StickersProvider() {
         mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         mUriMatcher.addURI(AUTHORITY, StickersTable.TABLE_NAME, CODE_STICKERS);
