@@ -121,9 +121,9 @@ public class GenerateReportFragment extends DialogFragment {
         String[] selectionArgs = new String[]{String.valueOf(baseCount)};
         String order = "";
         if (mOptions.showGroup) {
-            order = StickersTable.COLUMN_ABBREVIATION + " ASC, ";
+            order = StickersTable.COLUMN_COUNTRY_ID + " ASC, ";
         }
-        order += StickersTable.COLUMN_SIGN + " ASC";
+        order += StickersTable.COLUMN_DISPLAY_NAME + " ASC";
 
         Cursor c = cr.query(stickersUri, null, selection, selectionArgs, order);
 
@@ -133,14 +133,14 @@ public class GenerateReportFragment extends DialogFragment {
             builder.append(":\n");
 
             int abbrCol = c.getColumnIndex(StickersTable.COLUMN_ABBREVIATION);
-            int signCol = c.getColumnIndex(StickersTable.COLUMN_SIGN);
+            int nameCol = c.getColumnIndex(StickersTable.COLUMN_DISPLAY_NAME);
             int countCol = c.getColumnIndex(StickersTable.COLUMN_COUNT);
 
             String lastAbbr = null;
 
             do {
                 String abbr = c.getString(abbrCol);
-                int sign = c.getInt(signCol);
+                String displayName = c.getString(nameCol);
                 int count = c.getInt(countCol);
 
                 if (mOptions.showGroup && !abbr.equals(lastAbbr)) {
@@ -154,7 +154,7 @@ public class GenerateReportFragment extends DialogFragment {
                     builder.append(", ");
                 }
 
-                builder.append(sign);
+                builder.append(displayName);
                 if (includeCount) {
                     builder.append("x").append(count - 1);
                 }

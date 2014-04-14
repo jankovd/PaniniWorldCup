@@ -35,6 +35,7 @@ public class StickersCursorAdapter extends CursorAdapter implements StickyGridHe
     private int mSecondaryColor;
     private int mCountryId;
     private int mCountryAbbr;
+    private int mCountryFullName;
 
     private int mColorActiveItem;
 
@@ -70,6 +71,7 @@ public class StickersCursorAdapter extends CursorAdapter implements StickyGridHe
             mSecondaryColor = c.getColumnIndex(StickersTable.COLUMN_SECONDARY_COLOR);
             mCountryId = c.getColumnIndex(StickersTable.COLUMN_COUNTRY_ID);
             mCountryAbbr = c.getColumnIndex(StickersTable.COLUMN_ABBREVIATION);
+            mCountryFullName = c.getColumnIndex(StickersTable.COLUMN_FULL_NAME);
         }
     }
 
@@ -167,7 +169,7 @@ public class StickersCursorAdapter extends CursorAdapter implements StickyGridHe
             holder = (ViewHolderHeader) view.getTag();
         }
 
-        holder.title.setText(((Cursor) getItem(i)).getString(mCountryAbbr));
+        holder.title.setText(((Cursor) getItem(i)).getString(mCountryFullName));
 
         return view;
     }

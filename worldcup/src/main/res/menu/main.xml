@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="mk.jdex.paniniworldcup.MainActivity">
 
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="Color Calculator"
-        app:showAsAction="never" />
+    <!--<item-->
+    <!--android:id="@+id/action_settings"-->
+    <!--android:orderInCategory="100"-->
+    <!--android:title="Color Calculator"-->
+    <!--app:showAsAction="never" />-->
     <!--<item-->
     <!--android:id="@+id/action_stickersinsert"-->
     <!--android:orderInCategory="100"-->
@@ -16,6 +16,6 @@
     <item
         android:id="@+id/action_export"
         android:orderInCategory="1"
-        android:title="Send Report"
+        android:title="Share Report"
         app:showAsAction="never" />
 </menu>

@@ -100,10 +100,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(this, ColorCalc.class));
-            return true;
-        } else if (id == R.id.action_export) {
+        if (id == R.id.action_export) {
             new ReportOptionsDialog().show(getSupportFragmentManager(), "report_options_dialog");
             return true;
         }

@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.widget.Toast;
 
 import mk.jdex.paniniworldcup.model.ReportOptions;
@@ -20,8 +19,8 @@ public class ReportOptionsDialog extends DialogFragment {
     }
 
     private CharSequence[] mItemTitles = new CharSequence[]{
-            "Group stickers", "Show all",
-            "Show doubles", "Show missing"
+            "Group stickers", "Show collected",
+            "Show duplicates", "Show missing"
     };
     private boolean[] mItemsCheked;
     private OnOptionsSelected mListener;
@@ -61,7 +60,7 @@ public class ReportOptionsDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Report options");
+        builder.setTitle("Report Options:");
         builder.setMultiChoiceItems(mItemTitles, mItemsCheked, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i, boolean b) {
@@ -85,7 +84,7 @@ public class ReportOptionsDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (!mOptions.showAll && !mOptions.showMissing && !mOptions.showDoubles) {
-                    Toast.makeText(getActivity(), "At least one option should be selected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "At least one stickers group should be selected", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 dismiss();

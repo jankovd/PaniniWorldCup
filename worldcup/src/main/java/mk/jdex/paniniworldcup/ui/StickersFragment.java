@@ -35,6 +35,8 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
 
     private static final String STATE_FISRT_VISIBLE_ITEM = "state_first_visible_item";
 
+    private static final int MAX_STICKER_COUNT = 10;
+
     public static final int STICKERS_NO_FILTER = -1;
     private static final int STICKERS_WAIT_FOR_FILTER = -2;
 
@@ -166,7 +168,8 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
                         StickersTable.COLUMN_COUNTRY_ID,
                         StickersTable.COLUMN_PRIMARY_COLOR,
                         StickersTable.COLUMN_SECONDARY_COLOR,
-                        StickersTable.COLUMN_ABBREVIATION
+                        StickersTable.COLUMN_ABBREVIATION,
+                        StickersTable.COLUMN_FULL_NAME
                 },
                 selection, selectionArgs, null
         );
@@ -220,7 +223,7 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
                 Uri updateUri = StickersTable.CONTENT_URI;
                 updateUri = ContentUris.withAppendedId(updateUri, _id);
                 ContentValues values = new ContentValues();
-                values.put(StickersTable.COLUMN_COUNT, _count >= 5 ? 0 : (_count + 1));
+                values.put(StickersTable.COLUMN_COUNT, _count >= MAX_STICKER_COUNT ? 0 : (_count + 1));
                 App.getInstance().getContentResolver().update(updateUri, values, null, null);
             }
         }).start();
