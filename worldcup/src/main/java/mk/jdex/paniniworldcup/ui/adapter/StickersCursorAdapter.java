@@ -57,8 +57,8 @@ public class StickersCursorAdapter extends CursorAdapter implements StickyGridHe
 
     @Override
     public void changeCursor(Cursor cursor) {
-        super.changeCursor(cursor);
         readColumnsFromCursor(cursor);
+        super.changeCursor(cursor);
     }
 
     private void readColumnsFromCursor(Cursor c) {

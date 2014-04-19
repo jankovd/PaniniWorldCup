@@ -1,6 +1,5 @@
 package mk.jdex.paniniworldcup;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -34,6 +33,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
 
     private CountriesCursorAdapter mAdapter;
     private StickersFragment mStickersFragment;
+
+    private int mSelectedNavItem = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +77,12 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
         super.onRestoreInstanceState(savedInstanceState);
         // Restore the previously serialized current dropdown position.
         if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
-            getSupportActionBar().setSelectedNavigationItem(
-                    savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
+            mSelectedNavItem = savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM);
+
+            if (getActionBar().getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST) {
+                getSupportActionBar().setSelectedNavigationItem(mSelectedNavItem);
+                mSelectedNavItem = -1;
+            }
         }
     }
 
@@ -138,6 +143,10 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
         if (showList && actionBar.getNavigationMode() != ActionBar.NAVIGATION_MODE_LIST) {
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+            if (mSelectedNavItem != -1) {
+                actionBar.setSelectedNavigationItem(mSelectedNavItem);
+                mSelectedNavItem = -1;
+            }
         } else if (!showList) {
             actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
