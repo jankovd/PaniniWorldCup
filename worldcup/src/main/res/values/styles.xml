@@ -2,7 +2,12 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
-        <!-- Customize your theme here. -->
+        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
+        <item name="android:selectableItemBackground">@drawable/selector_selectable_item</item>
+        <item name="android:listChoiceBackgroundIndicator">@drawable/selector_selectable_item</item>
     </style>
 
+    <style name="ActionBarStyle" parent="Widget.AppCompat.Light.ActionBar">
+        <item name="android:background">@drawable/bg_actionbar</item>
+    </style>
 </resources>

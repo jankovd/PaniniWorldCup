@@ -11,7 +11,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -20,6 +25,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
+
+import java.util.ArrayList;
 
 import mk.jdex.paniniworldcup.R;
 import mk.jdex.paniniworldcup.content.StickersTable;
@@ -34,6 +41,9 @@ import static mk.jdex.paniniworldcup.util.Util.hasJellyBean;
 public class StickersFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     private static final String STATE_FISRT_VISIBLE_ITEM = "state_first_visible_item";
+    private static final String STATE_COLLECTED_SELECTED = "state_collected_selected";
+    private static final String STATE_MISSING_SELECTED = "state_missing_selected";
+    private static final String STATE_DUPLICATES_SELECTED = "state_duplicates_selected";
 
     private static final int MAX_STICKER_COUNT = 10;
 
@@ -50,6 +60,10 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
     private int mCountryId;
     private int mFirstVisiblePosition;
 
+    private boolean mIsCollectedSelected = false;
+    private boolean mIsMissingSelected = false;
+    private boolean mIsDuplicatesSelected = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +73,10 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
         if (savedInstanceState != null) {
             mCountryId = savedInstanceState.getInt(STATE_COUNTRY_ID, STICKERS_WAIT_FOR_FILTER);
             mFirstVisiblePosition = savedInstanceState.getInt(STATE_FISRT_VISIBLE_ITEM);
+
+            mIsCollectedSelected = savedInstanceState.getBoolean(STATE_COLLECTED_SELECTED);
+            mIsMissingSelected = savedInstanceState.getBoolean(STATE_MISSING_SELECTED);
+            mIsDuplicatesSelected = savedInstanceState.getBoolean(STATE_DUPLICATES_SELECTED);
         }
     }
 
@@ -117,6 +135,7 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
 
         if (mCountryId != STICKERS_WAIT_FOR_FILTER) {
             getLoaderManager().initLoader(0, null, this);
@@ -124,10 +143,47 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        SubMenu subMenu = menu.addSubMenu("Filter");
+        subMenu.getItem().setIcon(R.drawable.ic_action_filter);
+        subMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        inflater.inflate(R.menu.stickers, subMenu);
+
+        subMenu.findItem(R.id.action_collected).setChecked(mIsCollectedSelected);
+        subMenu.findItem(R.id.action_missing).setChecked(mIsMissingSelected);
+        subMenu.findItem(R.id.action_duplicates).setChecked(mIsDuplicatesSelected);
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if (R.id.action_collected == itemId) {
+            mIsCollectedSelected = !mIsCollectedSelected;
+            item.setChecked(mIsCollectedSelected);
+        } else if (R.id.action_missing == itemId) {
+            mIsMissingSelected = !mIsMissingSelected;
+            item.setChecked(mIsMissingSelected);
+        } else if (R.id.action_duplicates == itemId) {
+            mIsDuplicatesSelected = !mIsDuplicatesSelected;
+            item.setChecked(mIsDuplicatesSelected);
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+
+        getLoaderManager().restartLoader(0, null, this);
+        return true;
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_COUNTRY_ID, mCountryId);
         outState.putInt(STATE_FISRT_VISIBLE_ITEM, mGridView.getFirstVisiblePosition());
+        outState.putBoolean(STATE_COLLECTED_SELECTED, mIsCollectedSelected);
+        outState.putBoolean(STATE_MISSING_SELECTED, mIsMissingSelected);
+        outState.putBoolean(STATE_DUPLICATES_SELECTED, mIsDuplicatesSelected);
     }
 
     /**
@@ -141,25 +197,49 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
         getLoaderManager().restartLoader(0, null, this);
     }
 
-    private void setEmptyViewVisibility(boolean isDatasetEmpty) {
-        mEmptyProgressView.setVisibility(isDatasetEmpty ? View.GONE : View.VISIBLE);
-        mEmptyTextView.setVisibility(isDatasetEmpty ? View.VISIBLE : View.GONE);
+    private void setEmptyViewVisibility(boolean isLoading) {
+        mEmptyProgressView.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        mEmptyTextView.setVisibility(isLoading ? View.GONE : View.VISIBLE);
     }
 
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String selection = null;
-        String[] selectionArgs = null;
+    public Loader<Cursor> onCreateLoader(int id, Bundle bundleArgs) {
+        String selection = "";
+        ArrayList<String> selectionArgs = new ArrayList<String>(4);
         if (mCountryId == STICKERS_WAIT_FOR_FILTER) {
             // if we by mistake get here when we should wait for a filter, display all items
             mCountryId = STICKERS_NO_FILTER;
         }
+
         if (mCountryId != STICKERS_NO_FILTER) {
             selection = StickersTable.COLUMN_COUNTRY_ID + "=?";
-            selectionArgs = new String[]{String.valueOf(mCountryId)};
+            selectionArgs.add(String.valueOf(mCountryId));
+        }
+        boolean hasArgs = !selectionArgs.isEmpty();
+        String filter = "";
+        if (mIsCollectedSelected) {
+            filter += StickersTable.COLUMN_COUNT + ">?";
+            selectionArgs.add("0");
+        }
+        if (mIsDuplicatesSelected) {
+            filter += TextUtils.isEmpty(filter) ? "" : " OR ";
+            filter += StickersTable.COLUMN_COUNT + ">?";
+            selectionArgs.add("1");
+        }
+        if (mIsMissingSelected) {
+            filter += TextUtils.isEmpty(filter) ? "" : " OR ";
+            filter += StickersTable.COLUMN_COUNT + "=?";
+            selectionArgs.add("0");
         }
 
+        if (!TextUtils.isEmpty(filter)) {
+            selection += hasArgs ? " AND (" : "";
+            selection += filter;
+            selection += hasArgs ? ")" : "";
+        }
+
+        String[] args = selectionArgs.toArray(new String[selectionArgs.size()]);
         CursorLoader cl = new CursorLoader(getActivity(), StickersTable.CONTENT_URI,
                 new String[]{
                         StickersTable._ID,
@@ -171,7 +251,7 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
                         StickersTable.COLUMN_ABBREVIATION,
                         StickersTable.COLUMN_FULL_NAME
                 },
-                selection, selectionArgs, null
+                selection, selectionArgs.isEmpty() ? null : args, null
         );
         return cl;
     }
@@ -180,7 +260,7 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         boolean restorePostion = mAdapter.isEmpty();
         mAdapter.changeCursor(data);
-        setEmptyViewVisibility(data == null);
+        setEmptyViewVisibility(false);
 
         if (!restorePostion) {
             return;
@@ -198,7 +278,7 @@ public class StickersFragment extends Fragment implements LoaderManager.LoaderCa
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.changeCursor(null);
 
-        setEmptyViewVisibility(false);
+        setEmptyViewVisibility(true);
     }
 
     @Override

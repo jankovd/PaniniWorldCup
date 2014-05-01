@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 19
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.1.5"
     }
     signingConfigs {
         // Can be later modified to read the path and keystore info from the command line,

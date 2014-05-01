@@ -76,7 +76,7 @@ public class GenerateReportFragment extends DialogFragment {
 
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, mReportBuilder.toString());
-        sendIntent.setType("text/html");
+        sendIntent.setType("text/plain");
         getActivity().startActivity(sendIntent);
 
         dismiss();
@@ -123,7 +123,7 @@ public class GenerateReportFragment extends DialogFragment {
         if (mOptions.showGroup) {
             order = StickersTable.COLUMN_COUNTRY_ID + " ASC, ";
         }
-        order += StickersTable.COLUMN_DISPLAY_NAME + " ASC";
+        order += StickersTable.COLUMN_SIGN + " ASC";
 
         Cursor c = cr.query(stickersUri, null, selection, selectionArgs, order);
 

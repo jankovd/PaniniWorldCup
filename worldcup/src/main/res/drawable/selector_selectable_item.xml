@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+          android:enterFadeDuration="@integer/selector_anim_fade_duration"
+          android:exitFadeDuration="@integer/selector_anim_fade_duration">
+
+    <item android:state_activated="false" android:state_pressed="false">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/item_normal"/>
+        </shape>
+    </item>
+    <item android:state_activated="false">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/item_checked_pressed"/>
+        </shape>
+    </item>
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/item_checked_pressed"/>
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/item_checked"/>
+        </shape>
+    </item>
+
+</selector>

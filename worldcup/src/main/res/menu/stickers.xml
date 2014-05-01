@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_collected"
+        android:checkable="true"
+        android:checked="true"
+        android:orderInCategory="1"
+        android:showAsAction="never"
+        android:title="Collected" />
+    <item
+        android:id="@+id/action_missing"
+        android:checkable="true"
+        android:checked="true"
+        android:orderInCategory="2"
+        android:showAsAction="never"
+        android:title="Missing" />
+    <item
+        android:id="@+id/action_duplicates"
+        android:checkable="true"
+        android:checked="true"
+        android:orderInCategory="3"
+        android:showAsAction="never"
+        android:title="Duplicates" />
+</menu>

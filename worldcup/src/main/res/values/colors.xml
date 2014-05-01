@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="item_sticker_active">#4FBA3C</color>
+    <color name="item_sticker_active">#33ff00</color>
+    <color name="ab_background">#33ffffff</color>
+    <color name="ab_divider">#ccc</color>
+
+    <color name="item_pressed">#11000000</color>
+    <color name="item_checked">#11000000</color>
+    <color name="item_checked_pressed">#22000000</color>
+    <color name="item_normal">#00000000</color>
 </resources>

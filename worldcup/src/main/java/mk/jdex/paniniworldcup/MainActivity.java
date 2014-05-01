@@ -1,8 +1,10 @@
 package mk.jdex.paniniworldcup;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -51,7 +53,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
         // Set up the dropdown list navigation in the action bar.
         mAdapter = new CountriesCursorAdapter(actionBar.getThemedContext(), null);
         actionBar.setListNavigationCallbacks(mAdapter, this);
-        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#33ffffff")));
         actionBar.setDisplayShowHomeEnabled(false);
         getSupportLoaderManager().initLoader(0, null, this);
     }
@@ -112,8 +113,21 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
         if (id == R.id.action_export) {
             new ReportOptionsDialog().show(getSupportFragmentManager(), "report_options_dialog");
             return true;
+        } else if (id == R.id.action_share_app) {
+            shareApp();
+            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void shareApp() {
+        String shareUrl = "https://play.google.com/store/apps/details?id=" + getPackageName();
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareUrl);
+        shareIntent.setType("text/plain");
+        if(getPackageManager().resolveActivity(shareIntent, 0) != null) {
+            startActivity(shareIntent);
+        }
     }
 
     @Override
